@@ -1,0 +1,20 @@
+﻿﻿@model IEnumerable<School.Models.Course>
+@{
+    ViewBag.Title = "Course List";
+}
+
+<div id="containerlist">
+    <h2>List of Course</h2>
+    <form action="/Course/List" method="GET">
+        <input type="text" name="SearchKey" autocomplete="off" />
+        <input type="submit" value="Search" />
+    </form>
+    @foreach (var Course in Model)
+    {
+        <div class="listitem row">
+            <div class="col-md-12"><a href="/Course/Show/@Course.ClassId">@Course.ClassName</a></div>
+        </div>
+    }
+</div>
+
+

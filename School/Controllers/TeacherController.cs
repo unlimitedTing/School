@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace School.Controllers
 {
+    [RoutePrefix("teacher")]
     public class TeacherController : Controller
     {
         // GET: Teacher
@@ -16,6 +17,7 @@ namespace School.Controllers
         }
 
         //GET : /Teacher/List
+        [Route("list")]
         public ActionResult List(string SearchKey = null)
         {
             TeacherDataController controller = new TeacherDataController();
@@ -27,10 +29,18 @@ namespace School.Controllers
         public ActionResult Show(int id)
         {
             TeacherDataController controller = new TeacherDataController();
-            Teacher NewTeacher = controller.FindTeacher(id);
+            TeacherCourses NewTeacherCourses = controller.FindTeacher(id);
 
 
-            return View(NewTeacher);
+            return View(NewTeacherCourses);
+        }
+
+        //GET : /Teacher/ShowCourses/{id}
+        public ActionResult ShowCourses(int id)
+        {
+            TeacherDataController controller = new TeacherDataController();
+            IEnumerable<Course> Classes = controller.FindListClasses(id);
+            return View(Classes);
         }
     }
 }

@@ -1,13 +1,50 @@
-﻿/* Set padding to keep content from hitting the edges */
-.body-content {
-    margin-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
+﻿*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
+/* Set padding and margin for body content */
+.body-content {
+    margin-top: 15px;
+    padding: 0 15px;
+}
+
+/* Set max-width for form input elements */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
 select,
 textarea {
     max-width: 280px;
+}
+
+/* Improve readability for links */
+a {
+    text-decoration: none; /* Remove underline */
+    color: #007bff;
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+    a:hover {
+        color: #0056b3; /* Change color on hover */
+    }
+
+/* Set default styles for headings */
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 15px;
+}
+
+/* Improve spacing for paragraphs */
+p {
+    margin-bottom: 10px;
+}
+
+#containerlist, #containershow {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 80px;
 }

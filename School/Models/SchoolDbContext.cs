@@ -12,7 +12,7 @@ namespace School.Models
         private static string Password { get { return "root"; } }
         private static string Database { get { return "schooldb"; } }
         private static string Server { get { return "localhost"; } }
-        private static string Port { get { return "3303"; } }
+        private static string Port { get { return "3306"; } }
 
         //ConnectionString is a series of credentials used to connect to the database.
         protected static string ConnectionString
@@ -31,7 +31,7 @@ namespace School.Models
         public MySqlConnection AccessDatabase()
         {
             //We are instantiating the MySqlConnection Class to create an object
-            //the object is a specific connection to our blog database on port 3307 of localhost
+            //the object is a specific connection to our school database on port 3306 of localhost
             return new MySqlConnection(ConnectionString);
         }
 

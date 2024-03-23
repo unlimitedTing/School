@@ -1,0 +1,13 @@
+﻿﻿﻿@model School.Models.Course
+@{
+    ViewBag.Title = "Show";
+}
+
+<a class="navlink" href="/Course/List">Back To Courses</a>
+<div id="containershow">
+    <h2>@Model.ClassName</h2>
+    <p>@Model.ClassCode</p>
+    <p>@Model.StartDate</p>
+    <p>@Model.FinishDate</p>
+</div>
+

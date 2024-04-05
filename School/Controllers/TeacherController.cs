@@ -25,6 +25,48 @@ namespace School.Controllers
             return View(Teachers);
         }
 
+        //Get: /Teacher/New
+        public ActionResult New()
+        {
+            return View();
+        }
+
+        //Post: /Teacher/Create
+        [HttpPost]
+        public ActionResult Create(string TeacherFname, string TeacherLname, string EmployeeNumber, DateTime HireDate, decimal Salary)
+        {
+            // Initialize a new Teacher object
+            Teacher newTeacher = new Teacher();
+
+            // Assign the form parameter values to the corresponding properties of the Teacher object
+            newTeacher.TeacherFname = TeacherFname;
+            newTeacher.TeacherLname = TeacherLname;
+            newTeacher.EmployeeNumber = EmployeeNumber;
+            newTeacher.HireDate = HireDate;
+            newTeacher.Salary = Salary;
+
+            TeacherDataController controller = new TeacherDataController();
+            controller.AddTeacher(newTeacher);
+            return RedirectToAction("List");
+        }
+
+        //Delete: /Teacher/DeleteConfirm/{id}
+        public ActionResult DeleteConfirm(int id)
+        {
+            TeacherDataController controller = new TeacherDataController();
+            TeacherCourses NewTeacher = controller.FindTeacher(id);
+            return View(NewTeacher);
+        }
+
+        //Post: /Teacher/Delete/{id}
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            TeacherDataController controller = new TeacherDataController();
+            controller.DeleteTeacher(id);
+            return RedirectToAction("List");
+        }
+
         //GET : /Teacher/Show/{id}
         public ActionResult Show(int id)
         {

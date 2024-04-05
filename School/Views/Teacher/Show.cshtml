@@ -3,19 +3,26 @@
     ViewBag.Title = "Show";
 }
 
-<a class="navlink" href="/Teacher/List">Back To Teachers</a>
 <div id="containershow">
-    <h2>@Model.Teacher.TeacherFname @Model.Teacher.TeacherLname</h2>
-    <p>@Model.Teacher.EmployeeNumber</p>
-    <p>@Model.Teacher.HireDate</p>
-    <p>@Model.Teacher.Salary</p>
+    <nav>
+        <a class="navlink" href="/Teacher/List">Back To Teachers</a>
+        <a class="dellink"  href="/Teacher/DeleteConfirm/@Model.Teacher.TeacherId">Delete</a>
+    </nav>
+    
+    <div id="containershow">
+        <h2>@Model.Teacher.TeacherFname @Model.Teacher.TeacherLname</h2>
+        <p>@Model.Teacher.EmployeeNumber</p>
+        <p>@Model.Teacher.HireDate</p>
+        <p>@Model.Teacher.Salary</p>
+    </div>
+    <div>
+        @foreach (var course in Model.CoursesTaught)
+        {
+            <div class="listitem row">
+                <div class="col-md-12"><a href="#">@course.ClassCode @course.ClassName</a></div>
+            </div>
+        }
+    </div>
 </div>
-<div>
-    @foreach (var course in Model.CoursesTaught)
-    {
-        <div class="listitem row">
-            <div class="col-md-12"><a href="#">@course.ClassCode @course.ClassName</a></div>
-        </div>
-    }
-</div>
+
 

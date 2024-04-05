@@ -175,6 +175,97 @@ namespace School.Controllers
             return NewTeacherCourses;
         }
 
+        /// <summary>
+        /// Adds a new teacher record to the database.
+        /// </summary>
+        /// <param name="teacher">The teacher object containing details of the teacher to be added.</param>
+        /// <remarks>
+        /// This method inserts a new teacher record into the "Teachers" table in the database
+        /// with the specified details provided in the teacher object parameter.
+        /// </remarks>
+        [HttpPost]
+        public void AddTeacher(Teacher teacher)
+        {
+            // Check if any required property is null or empty
+            if (string.IsNullOrWhiteSpace(teacher.TeacherFname) ||
+                string.IsNullOrWhiteSpace(teacher.TeacherLname) ||
+                string.IsNullOrWhiteSpace(teacher.EmployeeNumber) ||
+                teacher.HireDate == default ||
+                teacher.Salary == default)
+            {
+                // If any required property is missing, throw an exception
+                throw new ArgumentException("All fields are required.");
+            }
+            // Create an instance of a connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            // Open the connection between the web server and database
+            Conn.Open();
+
+            // Establish a new command (query) for our database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            // SQL QUERY to insert new teacher record
+            cmd.CommandText = "INSERT INTO Teachers (teacherfname, teacherlname,employeenumber, hiredate, salary) " +
+                                "VALUES (@teacherFname, @teacherLname,@employeeNumber, @hireDate, @salary)";
+            cmd.Parameters.AddWithValue("@teacherFname", teacher.TeacherFname);
+            cmd.Parameters.AddWithValue("@teacherLname", teacher.TeacherLname);
+            cmd.Parameters.AddWithValue("@employeeNumber", teacher.EmployeeNumber);
+            cmd.Parameters.AddWithValue("@hireDate", teacher.HireDate);
+            cmd.Parameters.AddWithValue("@salary", teacher.Salary);
+
+            // Execute the command
+            cmd.ExecuteNonQuery();
+            
+            // Close the connection between the MySQL Database and the WebServer
+            Conn.Close();
+
+        }
+
+        /// <summary>
+        /// Deletes a teacher record from the database based on the specified teacher ID.
+        /// </summary>
+        /// <param name="id">The ID of the teacher to be deleted.</param>
+        /// <remarks>
+        /// This method deletes the teacher record from the "Teachers" table in the database
+        /// where the teacher ID matches the specified ID parameter.
+        /// </remarks>
+        [HttpPost]
+        public void DeleteTeacher(int id)
+        {
+            //Create an instance of a connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            // Open the connection between the web server and database
+            Conn.Open();
+
+            // Begin a database transaction to ensure atomicity
+            MySqlTransaction transaction = Conn.BeginTransaction();
+
+            // Establish a new command (query) for our database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            // First, delete all records from Classes table where teacherid matches the id
+            cmd.CommandText = "DELETE FROM Classes WHERE teacherid = @teacherId";
+            cmd.Parameters.AddWithValue("@teacherId", id);
+            cmd.ExecuteNonQuery();
+
+            // Next, delete the teacher record from Teachers table
+            cmd.CommandText = "DELETE FROM Teachers WHERE teacherid = @teacherId";
+            cmd.ExecuteNonQuery();
+
+            // Commit the transaction if all operations succeed
+            transaction.Commit();
+
+
+            Conn.Close();
+        }
+
+        /// <summary>
+        /// Return a list of courses teached by the teacher provided by the teacher id
+        /// </summary>
+        /// <param name="id">the teacher's id</param>
+        /// <returns>A list of courses object</returns>
         [HttpGet]
         public IEnumerable<Course> FindListClasses(int id)
         {

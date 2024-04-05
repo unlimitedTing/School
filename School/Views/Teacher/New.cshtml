@@ -1,0 +1,34 @@
+﻿@model School.Models.Teacher
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>Add a New Teacher Here</h2>
+<form method="POST" action="/Teacher/Create">
+    <div class="form-group">
+        <label for="TeacherFname">First Name:</label>
+        <input type="text" id="TeacherFname" name="TeacherFname" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="TeacherLname">Last Name:</label>
+        <input type="text" id="TeacherLname" name="TeacherLname" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="EmployeeNumber">Employee Number:</label>
+        <input type="text" id="EmployeeNumber" name="EmployeeNumber" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="HireDate">Hire Date:</label>
+        <input type="date" id="HireDate" name="HireDate" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="Salary">Salary:</label>
+        <input type="text" id="Salary" name="Salary" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Teacher</button>
+</form>

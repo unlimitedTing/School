@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using School.Models;
+using System;
+using System.Collections.Generic;
+using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace School.Controllers
 {
@@ -24,6 +22,7 @@ namespace School.Controllers
         /// </returns>
         [HttpGet]
         [Route("api/TeacherData/ListTeachers/{SearchKey?}")]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
         public IEnumerable<Teacher> ListTeachers(string searchKey = null)
         {
             //Create an instance of a connection
@@ -104,6 +103,7 @@ namespace School.Controllers
         /// <param name="id">the teacher's ID in the database</param>
         /// <returns>An teacher object</returns>
         [HttpGet]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
         public TeacherCourses FindTeacher(int id)
         {
             Teacher NewTeacher = new Teacher();
@@ -132,6 +132,7 @@ namespace School.Controllers
                 int TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
                 string TeacherFname = ResultSet["teacherfname"].ToString();
                 string TeacherLname = ResultSet["teacherlname"].ToString();
+                string EmployeeNumber = ResultSet["employeenumber"].ToString();
                 DateTime TeacherHireDate = (DateTime)ResultSet["hiredate"];
                 decimal TeacherSalary = (decimal)ResultSet["salary"];
 
@@ -139,6 +140,7 @@ namespace School.Controllers
                 NewTeacher.TeacherFname = TeacherFname;
                 NewTeacher.TeacherLname = TeacherLname;
                 NewTeacher.HireDate = TeacherHireDate;
+                NewTeacher.EmployeeNumber = EmployeeNumber;
                 NewTeacher.Salary = TeacherSalary;
 
                 NewTeacherCourses.Teacher = NewTeacher;
@@ -184,6 +186,7 @@ namespace School.Controllers
         /// with the specified details provided in the teacher object parameter.
         /// </remarks>
         [HttpPost]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
         public void AddTeacher(Teacher teacher)
         {
             // Check if any required property is null or empty
@@ -231,6 +234,7 @@ namespace School.Controllers
         /// where the teacher ID matches the specified ID parameter.
         /// </remarks>
         [HttpPost]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
         public void DeleteTeacher(int id)
         {
             //Create an instance of a connection
@@ -245,8 +249,8 @@ namespace School.Controllers
             // Establish a new command (query) for our database
             MySqlCommand cmd = Conn.CreateCommand();
 
-            // First, delete all records from Classes table where teacherid matches the id
-            cmd.CommandText = "DELETE FROM Classes WHERE teacherid = @teacherId";
+            // First, set all records from Classes table where teacherid matches the id
+            cmd.CommandText = "UPDATE courses SET teacherid = NULL WHERE teacherid = @teacherId";
             cmd.Parameters.AddWithValue("@teacherId", id);
             cmd.ExecuteNonQuery();
 
@@ -262,11 +266,59 @@ namespace School.Controllers
         }
 
         /// <summary>
+        /// Updates an Teacher on the MySQL Database. 
+        /// </summary>
+        /// <param name="Teacher">An object with fields that map to the columns of the teacher's table.</param>
+        /// <example>
+        /// POST api/TeacherData/UpdateTeacher/208 
+        /// FORM DATA / POST DATA / REQUEST BODY 
+        /// {
+        ///	"TeacberFname":"Alexander",
+        ///	"TeacberLname":"Bennett",
+        ///	"EmployeeNumber":"T378",
+        ///	"HireDate":"2016-08-05 00:00:00",
+        ///	"Salary":"55.30'
+        /// }
+        /// </example>
+        [HttpPost]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
+        public void UpdateTeacher(int id, [FromBody] Teacher teacher)
+        {
+            //Create an instance of a connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            //Debug.WriteLine(AuthorInfo.AuthorFname);
+
+            //Open the connection between the web server and database
+            Conn.Open();
+
+            //Establish a new command (query) for our database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            //SQL QUERY
+            cmd.CommandText = "UPDATE Teachers SET teacherfname = @TeacherFname, teacherlname = @TeacherLname, employeenumber = @EmployeeNumber, hiredate = @HireDate, salary = @Salary WHERE teacherid = @TeacherId";
+            cmd.Parameters.AddWithValue("@TeacherFname", teacher.TeacherFname);
+            cmd.Parameters.AddWithValue("@TeacherLname", teacher.TeacherLname);
+            cmd.Parameters.AddWithValue("@EmployeeNumber", teacher.EmployeeNumber);
+            cmd.Parameters.AddWithValue("@HireDate", teacher.HireDate);
+            cmd.Parameters.AddWithValue("@Salary", teacher.Salary);
+            cmd.Parameters.AddWithValue("@TeacherId", id);
+            cmd.Prepare();
+
+            cmd.ExecuteNonQuery();
+
+            Conn.Close();
+
+
+        }
+
+        /// <summary>
         /// Return a list of courses teached by the teacher provided by the teacher id
         /// </summary>
         /// <param name="id">the teacher's id</param>
         /// <returns>A list of courses object</returns>
         [HttpGet]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
         public IEnumerable<Course> FindListClasses(int id)
         {
             // Create a new instance of Class modal
@@ -306,6 +358,7 @@ namespace School.Controllers
 
             return Classes;
         }
+
 
     }
 }

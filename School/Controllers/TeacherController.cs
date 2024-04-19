@@ -146,6 +146,13 @@ namespace School.Controllers
         [HttpPost]
         public ActionResult Update(int id, string TeacherFname, string TeacherLname, string EmployeeNumber, DateTime HireDate, decimal Salary)
         {
+            // Check if required fields are missing
+            if (string.IsNullOrEmpty(TeacherFname) || string.IsNullOrEmpty(TeacherLname) || string.IsNullOrEmpty(EmployeeNumber) || HireDate == null || Salary == null)
+            {
+                // If any required field is missing, return a view with an error message
+                ModelState.AddModelError("", "Please fill in all required fields.");
+                return View(new Teacher { TeacherFname = TeacherFname, TeacherLname = TeacherLname, EmployeeNumber = EmployeeNumber, HireDate = HireDate, Salary = Salary });
+            }
             // Create a new instance of the Teacher class and populate it with the updated information
             Teacher teacherInfo = new Teacher();
             teacherInfo.TeacherFname = TeacherFname;
